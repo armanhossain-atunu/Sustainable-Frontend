@@ -6,7 +6,7 @@ const Logo = () => {
         <div>
             <Link href="/">
                 <Image 
-                    src="/sustainable_tech_solution.png" // No './public' needed
+                    src="/sustainable_tech_solution.png" 
                     alt="Logo" 
                     width={200} 
                     height={180} 
