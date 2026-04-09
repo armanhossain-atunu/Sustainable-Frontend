@@ -1,15 +1,17 @@
 import React from "react";
 import Logo from "../Shear/Logo";
-import { UserPlus } from "lucide-react";
+import { ShoppingCart, UserPlus } from "lucide-react";
 import Link from "next/link";
 import SearchBar from "../Shear/SearchBar";
 import NavLink from "./NavLink";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const navItems = [
     { name: "Laptop", href: "/laptop" },
     { name: "Mobile", href: "/mobile" },
     { name: "Accessories", href: "/accessories" },
+    // { name: "Cart", href: "/cart" },
   ];
   return (
     <div>
@@ -68,6 +70,14 @@ const Navbar = () => {
           <div className="hidden md:block">
             <SearchBar></SearchBar>
           </div>
+
+          {/* THEME TOGGLE */}
+          <ThemeToggle />
+
+          {/* CART */}
+          <Link href="/cart" className="btn btn-ghost btn-square" aria-label="View cart">
+            <ShoppingCart size={18} />
+          </Link>
 
           {/* BUTTON */}
           <div className="tooltip tooltip-left" data-tip="Please Login">

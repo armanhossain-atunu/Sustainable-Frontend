@@ -1,9 +1,26 @@
 import HeroSlider from '@/Components/Hero/HeroSlider';
+import ProductNameList from '@/Components/ProductNameList';
+// All products are fetched here and passed down to the ProductNameList component for display. This keeps the data fetching logic centralized in the page component, while the ProductNameList remains a pure presentational component.
+async function fetchProducts() {
+  const response = await fetch('https://sustainable-server.vercel.app/api/v1/products', {
+    cache: 'no-store',
+  });
 
-const Home = () => {
+  if (!response.ok) {
+    return [];
+  }
+
+  const json = await response.json();
+  return Array.isArray(json.data) ? json.data : [];
+}
+
+const Home = async () => {
+  const products = await fetchProducts();
+
   return (
     <div className="min-h-screen">
       <HeroSlider />
+      <ProductNameList products={products} />
     </div>
   );
 };

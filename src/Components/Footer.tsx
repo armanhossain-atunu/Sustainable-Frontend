@@ -59,7 +59,7 @@ const Footer = () => {
   return (
     <footer className="bg-base-200 border-t border-base-300">
       {/* Main Footer */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* Brand Column */}
@@ -173,7 +173,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-base-content/60">
           <p>© {currentYear} Sustainable Tech Solutions. All rights reserved.</p>
           <p className="flex items-center gap-1">
-            Made with <span className="text-red-500">♥</span> for a greener Earth
+            Made with <span className="text-red-500">♥</span> for a DeshSev
           </p>
         </div>
       </div>
@@ -181,4 +181,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer;
