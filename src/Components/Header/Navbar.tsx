@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import Logo from "../Shear/Logo";
 import { ShoppingCart, UserPlus } from "lucide-react";
@@ -5,8 +6,10 @@ import Link from "next/link";
 import SearchBar from "../Shear/SearchBar";
 import NavLink from "./NavLink";
 import ThemeToggle from "./ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
   const navItems = [
     { name: "Laptop", href: "/laptop" },
     { name: "Mobile", href: "/mobile" },
@@ -79,12 +82,22 @@ const Navbar = () => {
             <ShoppingCart size={18} />
           </Link>
 
-          {/* BUTTON */}
-          <div className="tooltip tooltip-left" data-tip="Please Login">
-            <button className="btn">
-              <UserPlus size={18} />
-            </button>
-          </div>
+          {/* USER INFO OR LOGIN BUTTON */}
+          {user ? (
+            <div className="flex items-center gap-2">
+              {user.photo && (
+                <img src={user.photo} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+              )}
+              <span className="font-medium">{user.name}</span>
+              <button onClick={logout} className="btn btn-ghost btn-xs">Logout</button>
+            </div>
+          ) : (
+            <div className="tooltip tooltip-left" data-tip="Please Login">
+              <Link href="/login" className="btn">
+                <UserPlus size={18} />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

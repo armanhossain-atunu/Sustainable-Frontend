@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 type Product = {
@@ -48,6 +49,13 @@ const ProductNameList = ({ products }: ProductNameListProps) => {
                 <p className="text-sm text-base-content/60">Slug: {product.slug}</p>
               ) : null}
             </div>
+            <img src={product.image} alt={product.title} />
+            {/* <Image
+              src={product.image}
+              alt={product.title}
+              width={100}
+              height={100}
+            /> */}
             <div>
               <p className="text-sm text-base-content/60">Category: {product.category}</p>
               <p className="text-sm text-base-content/60">Rating: {product.rating}</p>
