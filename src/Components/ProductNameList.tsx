@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 
@@ -28,44 +29,31 @@ const ProductNameList = ({ products }: ProductNameListProps) => {
   }
 
   return (
-    <section className="mx-auto my-10 max-w-5xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
-      <h2 className="text-2xl font-semibold">All Products</h2>
-      <p className="mt-2 text-base-content/70">Showing names for all available products from the API.</p>
-      <div className="mt-6 space-y-3">
+   <div className="mx-auto my-10 max-w-6xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
+      <h2 className="text-2xl font-semibold mb-4">All Products</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
-          <div
-            key={product._id}
-            className="flex flex-col rounded-lg border border-base-300 bg-base-100 p-4 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div>
-              <p className="font-medium text-base-content">{product.title}</p>
-              <p className="text-sm text-base-content/60">{product.description}</p>
-
-              {product.price ? (
-                <p className="text-sm text-base-content/60">Price: {product.price}</p>
-              ) : null}
-
-              {product.slug ? (
-                <p className="text-sm text-base-content/60">Slug: {product.slug}</p>
-              ) : null}
-            </div>
-            <img src={product.image} alt={product.title} />
-            {/* <Image
-              src={product.image}
-              alt={product.title}
-              width={100}
-              height={100}
-            /> */}
-            <div>
-              <p className="text-sm text-base-content/60">Category: {product.category}</p>
-              <p className="text-sm text-base-content/60">Rating: {product.rating}</p>
-              <p className="text-sm text-base-content/60">Number of Reviews: {product.numReviews}</p>
+          <div key={product._id} className="card bg-base-100 shadow-sm">
+            <figure>
+              <Image
+                src={product.image}
+                alt={product.title}
+                width={400}
+                height={300}
+                className="object-cover h-50"
+              />
+            </figure>
+            <div className="card-body">
+              <h3 className="card-title">{product.title}</h3>
+              <p className="text-sm text-base-content/70">{product.category}</p>
+              <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
             </div>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
-};
+}
+ 
 
 export default ProductNameList;

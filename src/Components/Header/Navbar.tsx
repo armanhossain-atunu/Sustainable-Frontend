@@ -51,9 +51,9 @@ const Navbar = () => {
           </div>
 
           {/* LOGO */}
-          <Link href="/">
+        
             <Logo />
-          </Link>
+         
         </div>
 
         {/* CENTER MENU */}

@@ -26,6 +26,7 @@ const Login = () => {
         body: JSON.stringify(data),
       });
       const result = await res.json();
+      console.log(result);
       if (res.ok) {
         toast.success("Login successful!");
         setTimeout(() => {

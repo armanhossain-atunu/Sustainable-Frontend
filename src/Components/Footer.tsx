@@ -83,14 +83,14 @@ const Footer = () => {
             {/* Socials */}
             <div className="flex gap-3 mt-2">
               {socialLinks.map((social) => (
-                <a
+                <Link
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
                   className="btn btn-sm btn-ghost btn-circle border border-base-300 hover:btn-primary transition-all duration-300"
                 >
                   {social.icon}
-                </a>
+                </ Link>
               ))}
             </div>
           </div>
