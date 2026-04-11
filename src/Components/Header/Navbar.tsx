@@ -7,9 +7,12 @@ import SearchBar from "../Shear/SearchBar";
 import NavLink from "./NavLink";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { cart } = useCart();
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const navItems = [
     { name: "Laptop", href: "/laptop" },
     { name: "Mobile", href: "/mobile" },
@@ -78,8 +81,13 @@ const Navbar = () => {
           <ThemeToggle />
 
           {/* CART */}
-          <Link href="/cart" className="btn btn-ghost btn-square" aria-label="View cart">
+          <Link href="/cart" className="relative btn btn-ghost btn-square" aria-label="View cart">
             <ShoppingCart size={18} />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                {totalItems > 99 ? "99+" : totalItems}
+              </span>
+            )}
           </Link>
 
           {/* USER INFO OR LOGIN BUTTON */}

@@ -4,6 +4,9 @@ import "./globals.css";
 import Navbar from "@/Components/Header/Navbar";
 import Footer from "@/Components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,15 +35,18 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative bg-base-100 text-base-content">
-        <AuthProvider>
-          <header className="sticky top-0 z-50">
-            <Navbar />
-          </header>
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+        <CartProvider>
+          <AuthProvider>
+            <header className="sticky top-0 z-50">
+              <Navbar />
+            </header>
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+            <ToastContainer position="bottom-right" autoClose={2500} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover theme="light" />
+          </AuthProvider>
+        </CartProvider>
       </body>
     </html>
   );

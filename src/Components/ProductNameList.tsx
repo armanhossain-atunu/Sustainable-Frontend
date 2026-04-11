@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
+import { useCart } from "@/context/CartContext";
+import { toast } from "react-toastify";
 
 type Product = {
   _id: string;
@@ -19,6 +22,7 @@ type ProductNameListProps = {
 };
 
 const ProductNameList = ({ products }: ProductNameListProps) => {
+  const { addToCart } = useCart();
   if (!products.length) {
     return (
       <section className="mx-auto my-10 max-w-5xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
@@ -29,7 +33,7 @@ const ProductNameList = ({ products }: ProductNameListProps) => {
   }
 
   return (
-   <div className="mx-auto my-10 max-w-6xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
+    <div className="mx-auto my-10 max-w-6xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
       <h2 className="text-2xl font-semibold mb-4">All Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
@@ -47,6 +51,25 @@ const ProductNameList = ({ products }: ProductNameListProps) => {
               <h3 className="card-title">{product.title}</h3>
               <p className="text-sm text-base-content/70">{product.category}</p>
               <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
+            </div>
+            <div className="card-actions justify-end">
+              <Link href={`/product/${product.slug}`} className="btn btn-primary btn-sm m-4">View Details</Link>
+              <button
+                className="btn btn-secondary btn-sm m-4"
+                onClick={() => {
+                  addToCart({
+                    _id: product._id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                  });
+                  toast.success(`"${product.title}" added to cart! 🛒`, {
+                    position: "bottom-right",
+                  });
+                }}
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
         ))}
