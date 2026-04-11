@@ -13,7 +13,7 @@ const handler = NextAuth({
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
-          const res = await fetch("https://sustainable-server.vercel.app/api/v1/users/login", {
+          const res = await fetch("http://localhost:5000/api/v1/users/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

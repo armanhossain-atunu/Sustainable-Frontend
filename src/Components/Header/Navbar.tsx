@@ -95,11 +95,37 @@ const Navbar = () => {
           {/* USER INFO OR LOGIN BUTTON */}
           {user ? (
             <div className="flex items-center gap-2">
-              {user.image && (
+              {/* {user.image && (
                 <img src={user.image} alt={user.name || ""} className="w-8 h-8 rounded-full object-cover" />
               )}
               <span className="font-medium">{user.name}</span>
-              <button onClick={() => signOut()} className="btn btn-ghost btn-xs">Logout</button>
+              <button onClick={() => signOut()} className="btn btn-ghost btn-xs">Logout</button> */}
+              <div className="navbar ">
+ 
+  <div className="flex gap-2">
+    <div className="dropdown dropdown-end">
+      <div tabIndex={0} role="button" className="btn-circle avatar">
+        <div className="w-10 rounded-full">
+          <img
+            alt="Tailwind CSS Navbar component"
+            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+        </div>
+      </div>
+      <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+        <li>
+          <a className="justify-between">
+            Profile
+            <span className="badge">New</span>
+          </a>
+        </li>
+        <li><a>Settings</a></li>
+      <button onClick={() => signOut()} className="btn btn-ghost btn-xs">Logout</button>
+      </ul>
+    </div>
+  </div>
+</div>
             </div>
           ) : (
             <div className="tooltip tooltip-left" data-tip="Please Login">
