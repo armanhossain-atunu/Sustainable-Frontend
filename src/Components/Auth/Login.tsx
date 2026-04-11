@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { signIn } from "next-auth/react";
+import Link from 'next/link';
 
 interface LoginFormInputs {
   email: string;
@@ -20,20 +22,20 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormInputs) => {
     try {
-      const res = await fetch("https://sustainable-server.vercel.app/api/v1/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
       });
-      const result = await res.json();
-      console.log(result);
-      if (res.ok) {
+
+      if (result?.error) {
+        toast.error(result.error || "Login failed");
+      } else {
         toast.success("Login successful!");
         setTimeout(() => {
           router.push("/");
+          router.refresh();
         }, 1200);
-      } else {
-        toast.error(result.message || "Login failed");
       }
     } catch (err: any) {
       toast.error(err.message || "Login failed");
@@ -66,6 +68,13 @@ const Login = () => {
           {isSubmitting ? "Logging in..." : "Login"}
         </button>
       </form>
+      <div className="divider max-w-md mx-auto">OR</div>
+      <p className="text-center text-sm">
+        Don't have an account?{" "}
+        <Link href="/register" className="link link-primary font-semibold">
+          Register here
+        </Link>
+      </p>
       <ToastContainer />
     </div>
   );

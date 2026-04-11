@@ -6,11 +6,13 @@ import Link from "next/link";
 import SearchBar from "../Shear/SearchBar";
 import NavLink from "./NavLink";
 import ThemeToggle from "./ThemeToggle";
-import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { data: session } = useSession();
+  const user = session?.user;
+  console.log("User session data:", session);
   const { cart } = useCart();
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const navItems = [
@@ -93,11 +95,11 @@ const Navbar = () => {
           {/* USER INFO OR LOGIN BUTTON */}
           {user ? (
             <div className="flex items-center gap-2">
-              {user.photo && (
-                <img src={user.photo} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+              {user.image && (
+                <img src={user.image} alt={user.name || ""} className="w-8 h-8 rounded-full object-cover" />
               )}
               <span className="font-medium">{user.name}</span>
-              <button onClick={logout} className="btn btn-ghost btn-xs">Logout</button>
+              <button onClick={() => signOut()} className="btn btn-ghost btn-xs">Logout</button>
             </div>
           ) : (
             <div className="tooltip tooltip-left" data-tip="Please Login">
