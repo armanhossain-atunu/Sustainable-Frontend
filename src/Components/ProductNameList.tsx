@@ -33,7 +33,7 @@ const ProductNameList = ({ products }: ProductNameListProps) => {
   }
 
   return (
-    <div className="mx-auto my-10 max-w-6xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
+    <div className="mx-auto my-10 max-w-7xl rounded-xl border border-base-300 bg-base-200 p-6 shadow-sm">
       <h2 className="text-2xl font-semibold mb-4">All Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
