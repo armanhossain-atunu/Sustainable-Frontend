@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { User, Mail, Phone, MapPin, Wrench } from "lucide-react";
 
 type ProductServiceRequestFormProps = {
-  productName: string;
+  productName?: string;
   modelNumber?: string;
 };
 
@@ -23,7 +23,7 @@ type ServiceRequestFormValues = {
 };
 
 export default function ProductServiceRequestForm({
-  productName,
+  productName = "",
   modelNumber,
 }: ProductServiceRequestFormProps) {
   const { data: session, status } = useSession();
@@ -33,7 +33,7 @@ export default function ProductServiceRequestForm({
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<ServiceRequestFormValues>({
     defaultValues: {
       userName: user?.name ?? "",
@@ -64,6 +64,54 @@ export default function ProductServiceRequestForm({
     toast.success("Request ready! API integration next.");
     reset();
   };
+
+  if (status === "loading") {
+    return (
+      <section className="mt-12 mx-auto max-w-4xl rounded-2xl border bg-base-300 p-6 shadow-lg sm:p-10">
+        <div className="animate-pulse space-y-6">
+          <div className="space-y-3">
+            <div className="h-8 w-64 rounded-full bg-base-100/80" />
+            <div className="h-4 w-80 max-w-full rounded-full bg-base-100/60" />
+            <div className="h-4 w-48 rounded-full bg-base-100/60" />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <div className="h-4 w-24 rounded-full bg-base-100/70" />
+              <div className="h-12 rounded-xl bg-base-100" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-20 rounded-full bg-base-100/70" />
+              <div className="h-12 rounded-xl bg-base-100" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-28 rounded-full bg-base-100/70" />
+              <div className="h-12 rounded-xl bg-base-100" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-28 rounded-full bg-base-100/70" />
+              <div className="h-12 rounded-xl bg-base-100" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-20 rounded-full bg-base-100/70" />
+              <div className="h-12 rounded-xl bg-base-100" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-24 rounded-full bg-base-100/70" />
+              <div className="h-12 rounded-xl bg-base-100" />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <div className="h-4 w-36 rounded-full bg-base-100/70" />
+              <div className="h-32 rounded-2xl bg-base-100" />
+            </div>
+            <div className="md:col-span-2 flex justify-end">
+              <div className="h-12 w-40 rounded-xl bg-base-100" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="mt-12 max-w-4xl mx-auto rounded-2xl bg-base-300 shadow-lg border p-6 sm:p-10">
@@ -99,6 +147,7 @@ export default function ProductServiceRequestForm({
             <input
               type="text"
               className="w-full p-2 outline-none"
+              placeholder="Your name"
               {...register("userName", { required: true })}
             />
           </div>
@@ -112,6 +161,7 @@ export default function ProductServiceRequestForm({
             <input
               type="email"
               className="w-full p-2 outline-none"
+              placeholder="Your email"
               {...register("email", { required: true })}
             />
           </div>
@@ -121,6 +171,8 @@ export default function ProductServiceRequestForm({
         <div>
           <label className="text-sm font-medium">Product Name</label>
           <input
+            type="text"
+            placeholder="Product name"
             className="input input-bordered w-full mt-1 focus:ring-2 focus:ring-primary"
             {...register("productName", { required: true })}
           />
@@ -130,6 +182,8 @@ export default function ProductServiceRequestForm({
         <div>
           <label className="text-sm font-medium">Model Number</label>
           <input
+            type="text"
+            placeholder="Model number"
             className="input input-bordered w-full mt-1 focus:ring-2 focus:ring-primary"
             {...register("modelNumber", { required: true })}
           />
@@ -142,6 +196,7 @@ export default function ProductServiceRequestForm({
             <Phone className="w-4 h-4 text-gray-400" />
             <input
               type="tel"
+              placeholder="Your phone number"
               className="w-full p-2 outline-none"
               {...register("phoneNumber", { required: true })}
             />
@@ -155,6 +210,7 @@ export default function ProductServiceRequestForm({
             <MapPin className="w-4 h-4 text-gray-400" />
             <input
               type="text"
+              placeholder="Your location"
               className="w-full p-2 outline-none"
               {...register("location", { required: true })}
             />

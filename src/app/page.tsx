@@ -1,5 +1,11 @@
+import { Suspense } from "react";
+
 import HeroSlider from "@/Components/Hero/HeroSlider";
 import AllProducts from "@/Components/Products/AllProducts";
+import {
+  AllProductsSkeleton,
+  RecentProductsSkeleton,
+} from "@/Components/Products/ProductLoadingSkeletons";
 import ProductServiceRequestForm from "@/Components/Products/ProductServiceRequestForm";
 import RecentProducts from "@/Components/Products/RecentProducts";
 
@@ -24,16 +30,36 @@ type HomePageProps = {
   searchParams: Promise<{ search?: string }>;
 };
 
-const Home = async ({ searchParams }: HomePageProps) => {
-  const { search = "" } = await searchParams;
+async function HomeProductsSection({ search }: { search: string }) {
   const products = await fetchProducts(search);
   const isSearching = Boolean(search.trim());
 
   return (
-    <div className="min-h-screen">
-      <HeroSlider />
+    <>
       {!isSearching ? <RecentProducts products={products} /> : null}
       <AllProducts products={products} searchQuery={search} />
+    </>
+  );
+}
+
+function HomeProductsFallback() {
+  return (
+    <>
+      <RecentProductsSkeleton />
+      <AllProductsSkeleton />
+    </>
+  );
+}
+
+const Home = async ({ searchParams }: HomePageProps) => {
+  const { search = "" } = await searchParams;
+
+  return (
+    <div className="min-h-screen">
+      <HeroSlider />
+      <Suspense fallback={<HomeProductsFallback />}>
+        <HomeProductsSection search={search} />
+      </Suspense>
       <ProductServiceRequestForm />
     </div>
   );

@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import ProductAddToCartButton from "./ProductAddToCartButton";
 
 type Product = {
   _id: string;
@@ -18,6 +19,7 @@ const AllProducts = ({
   searchQuery?: string;
 }) => {
   const trimmedQuery = searchQuery.trim();
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -56,13 +58,14 @@ const AllProducts = ({
               <h2 className="text-xl font-bold text-blue-600">
                 ${product.price.toFixed(2)}
               </h2>
-              <div className="mt-5">
+              <div className="mt-5 flex flex-col gap-2">
                 <Link
                   href={`/product/${product._id}`}
-                  className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  className="mt-4 text-center rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
                   View Details
                 </Link>
+               <ProductAddToCartButton product={product} />
               </div>
             </div>
           ))}

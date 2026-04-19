@@ -1,4 +1,7 @@
+import { Suspense } from "react";
+
 import ProductAddToCartButton from "@/Components/Products/ProductAddToCartButton";
+import { ProductDetailSkeleton } from "@/Components/Products/ProductLoadingSkeletons";
 import ProductServiceRequestForm from "@/Components/Products/ProductServiceRequestForm";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -70,12 +73,7 @@ async function getProduct(slug: string): Promise<Product | null> {
   return (json?.data ?? json) as Product | null;
 }
 
-export default async function ProductDetailsPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+async function ProductDetailsContent({ slug }: { slug: string }) {
   const product = await getProduct(slug);
 
   if (!product?._id) {
@@ -203,12 +201,26 @@ export default async function ProductDetailsPage({
             </div>
           ) : null}
 
-          <ProductServiceRequestFormn
+          <ProductServiceRequestForm
             productName={product.title}
             modelNumber={product.modelNumber}
           />
         </div>
       </div>
     </section>
+  );
+}
+
+export default async function ProductDetailsPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  return (
+    <Suspense fallback={<ProductDetailSkeleton />}>
+      <ProductDetailsContent slug={slug} />
+    </Suspense>
   );
 }
