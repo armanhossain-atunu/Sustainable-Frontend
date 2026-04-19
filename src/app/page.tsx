@@ -1,8 +1,10 @@
 import HeroSlider from '@/Components/Hero/HeroSlider';
-import ProductNameList from '@/Components/ProductNameList';
+import AllProducts from '@/Components/Products/AllProducts';
+import RecentProducts from '@/Components/Products/RecentProducts';
+
 // All products are fetched here and passed down to the ProductNameList component for display. This keeps the data fetching logic centralized in the page component, while the ProductNameList remains a pure presentational component.
 async function fetchProducts() {
-  const response = await fetch(` ${process.env.SERVER_DOMAIN}/products`, {
+  const response = await fetch(`${process.env.SERVER_DOMAIN?.trim()}/products`, {
     cache: 'no-store',
   });
 
@@ -20,7 +22,8 @@ const Home = async () => {
   return (
     <div className="min-h-screen">
       <HeroSlider />
-      <ProductNameList products={products} />
+      <RecentProducts products={products} />
+      <AllProducts products={products} />
     </div>
   );
 };

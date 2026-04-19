@@ -44,7 +44,7 @@ export default function CartPage() {
             />
           </svg>
           <p className="text-lg font-medium">Your cart is empty</p>
-          <Link href="/products" className="btn btn-primary btn-sm">
+          <Link href="/" className="btn btn-primary btn-sm">
             Browse Products
           </Link>
         </div>

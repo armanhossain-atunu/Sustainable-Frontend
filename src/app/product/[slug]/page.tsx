@@ -1,196 +1,203 @@
-"use client";
-
-import { useCart } from "@/context/CartContext";
 import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { notFound } from "next/navigation";
+
+import ProductAddToCartButton from "@/components/Products/ProductAddToCartButton";
 
 type Product = {
   _id: string;
   title: string;
-  slug: string;
-  description: string;
-  price: number;
-  category: string;
-  image: string;
-  rating: number;
-  numReviews: number;
+  description?: string;
+  image?: string;
+  price?: number | string;
+  discountPrice?: number | string;
+  category?: string;
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  location?: string;
+  venue?: string;
+  organizer?: string;
+  organizerContact?: string;
+  status?: string;
+  tags?: string[];
 };
 
-function StarRating({ rating, numReviews }: { rating: number, numReviews: number }) {
-  return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <svg
-          key={star}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          className={`h-5 w-5 ${
-            star <= Math.round(rating)
-              ? "fill-yellow-400 text-yellow-400"
-              : "fill-base-300 text-base-300"
-          }`}
-        >
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      ))}
-      <span className="ml-1 text-sm text-base-content/60">
-        {rating?.toFixed(1)} ({numReviews} reviews)
-      </span>
-    </div>
-  );
+function getBaseUrl() {
+  return process.env.SERVER_DOMAIN?.trim().replace(/\/+$/, "") ?? "";
 }
 
-export default function ProductDetailsPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const { addToCart } = useCart();
-
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [added, setAdded] = useState(false);
-
-  useEffect(() => {
-    if (!slug) return;
-    setLoading(true);
-    setError(false);
-
-    // Using query parameter because direct slug route is not available
-    fetch(`https://sustainable-server.vercel.app/api/v1/products?slug=${slug}`, {
-      cache: "no-store",
-    } as RequestInit)
-      .then((res) => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then((json) => {
-        const data = json?.data;
-        if (Array.isArray(data) && data.length > 0) {
-          setProduct(data[0]);
-        } else if (data && !Array.isArray(data)) {
-          setProduct(data);
-        } else {
-          setError(true);
-        }
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [slug]);
-
-  const handleAddToCart = () => {
-    if (!product) return;
-    addToCart({
-      _id: product._id,
-      title: product.title,
-      price: product.price,
-      image: product.image,
-    });
-    toast.success(`"${product.title}" added to cart! 🛒`, {
-      position: "bottom-right",
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
-  };
-
-  /* ---------- LOADING ---------- */
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <span className="loading loading-spinner loading-lg text-primary" />
-      </div>
-    );
-  }
-
-  /* ---------- ERROR / NOT FOUND ---------- */
-  if (error || !product) {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <p className="text-xl font-semibold text-error">Product not found.</p>
-        <Link href="/" className="btn btn-primary btn-sm">
-          ← Back to Products
-        </Link>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-auto my-10 max-w-5xl px-4">
-      {/* Breadcrumb */}
-      <div className="mb-6 text-sm breadcrumbs text-base-content/60">
-        <ul>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>{product.category}</li>
-          <li className="text-base-content font-medium truncate max-w-[200px]">
-            {product.title}
-          </li>
-        </ul>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 rounded-2xl bg-base-200 border border-base-300 p-6 shadow-sm">
-        {/* LEFT — Image */}
-        <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-base-100 shadow-inner">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            className="object-contain p-4"
-            priority
-          />
-        </div>
-
-        {/* RIGHT — Info */}
-        <div className="flex flex-col gap-4 justify-center">
-          {/* Category badge */}
-          <span className="badge badge-outline badge-sm uppercase tracking-widest">
-            {product.category}
-          </span>
-
-          {/* Title */}
-          <h1 className="text-3xl font-bold leading-tight">{product.title}</h1>
-
-          {/* Rating */}
-          <StarRating rating={product.rating} numReviews={product.numReviews} />
-
-          {/* Price */}
-          <p className="text-4xl font-extrabold text-primary">
-            ${product.price.toFixed(2)}
-          </p>
-
-          {/* Description */}
-          <p className="text-base-content/70 leading-relaxed text-sm">
-            {product.description}
-          </p>
-
-          <div className="divider my-0" />
-
-          {/* Actions */}
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={handleAddToCart}
-              className={`btn btn-primary flex-1 transition-all ${
-                added ? "btn-success" : ""
-              }`}
-            >
-              {added ? "✓ Added!" : "🛒 Add to Cart"}
-            </button>
-            <Link href="/cart" className="btn btn-outline flex-1">
-              View Cart
-            </Link>
-          </div>
-
-          {/* Trust badges */}
-          <div className="flex flex-wrap gap-4 text-xs text-base-content/50 mt-2">
-            <span>✅ Free Shipping</span>
-            <span>🔄 30-Day Returns</span>
-            <span>🛡️ 1 Year Warranty</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+function toNumber(value: Product["price"]) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string" && value.trim()) return Number(value);
+  return 0;
 }
 
+function formatPrice(value: Product["price"]) {
+  const amount = toNumber(value);
+  return `$${amount.toFixed(2)}`;
+}
+
+function formatDate(value?: string) {
+  if (!value) return null;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+  }).format(date);
+}
+
+async function getProduct(slug: string): Promise<Product | null> {
+  const baseUrl = getBaseUrl();
+  if (!baseUrl) {
+    return null;
+  }
+
+  const res = await fetch(`${baseUrl}/products/${encodeURIComponent(slug)}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    return null;
+  }
+
+  const json = await res.json();
+  return (json?.data ?? json) as Product | null;
+}
+
+export default async function ProductDetailsPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+
+  if (!product?._id) {
+    notFound();
+  }
+
+  const regularPrice = toNumber(product.price);
+  const discountedPrice = toNumber(product.discountPrice);
+  const hasDiscount = discountedPrice > 0 && discountedPrice < regularPrice;
+
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="overflow-hidden rounded-3xl border border-base-300 bg-base-200 shadow-sm">
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.title}
+              width={900}
+              height={900}
+              priority
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex min-h-[420px] items-center justify-center text-base-content/50">
+              Product image unavailable
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              {product.category ? (
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                  {product.category}
+                </span>
+              ) : null}
+              {product.status ? (
+                <span className="rounded-full bg-base-200 px-3 py-1 text-sm font-medium capitalize text-base-content/80">
+                  {product.status}
+                </span>
+              ) : null}
+            </div>
+
+            <h1 className="text-3xl font-bold leading-tight text-base-content sm:text-4xl">
+              {product.title}
+            </h1>
+
+            <p className="text-base leading-7 text-base-content/75">
+              {product.description || "No description is available for this product yet."}
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-base-300 bg-base-200 p-5 shadow-sm">
+            <div className="flex flex-wrap items-end gap-3">
+              <p className="text-3xl font-bold text-primary">
+                {formatPrice(hasDiscount ? product.discountPrice : product.price)}
+              </p>
+              {hasDiscount ? (
+                <p className="text-base font-medium text-base-content/50 line-through">
+                  {formatPrice(product.price)}
+                </p>
+              ) : null}
+            </div>
+
+            <p className="mt-2 text-sm text-base-content/60">
+              {hasDiscount ? "Discounted price available now." : "Current listed price."}
+            </p>
+
+            <div className="mt-5">
+              <ProductAddToCartButton
+                product={{
+                  _id: product._id,
+                  title: product.title,
+                  price: hasDiscount ? discountedPrice : regularPrice,
+                  image: product.image ?? "/favicon.ico",
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {product.date ? (
+              <div className="rounded-2xl border border-base-300 bg-base-100 p-4">
+                <p className="text-sm font-medium text-base-content/50">Date</p>
+                <p className="mt-1 font-semibold">{formatDate(product.date)}</p>
+              </div>
+            ) : null}
+            {product.location ? (
+              <div className="rounded-2xl border border-base-300 bg-base-100 p-4">
+                <p className="text-sm font-medium text-base-content/50">Location</p>
+                <p className="mt-1 font-semibold">{product.location}</p>
+              </div>
+            ) : null}
+            {product.venue ? (
+              <div className="rounded-2xl border border-base-300 bg-base-100 p-4">
+                <p className="text-sm font-medium text-base-content/50">Venue</p>
+                <p className="mt-1 font-semibold">{product.venue}</p>
+              </div>
+            ) : null}
+            {product.organizer ? (
+              <div className="rounded-2xl border border-base-300 bg-base-100 p-4">
+                <p className="text-sm font-medium text-base-content/50">Organizer</p>
+                <p className="mt-1 font-semibold">{product.organizer}</p>
+              </div>
+            ) : null}
+          </div>
+
+          {product.tags?.length ? (
+            <div>
+              <p className="mb-3 text-sm font-medium text-base-content/50">Tags</p>
+              <div className="flex flex-wrap gap-2">
+                {product.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-base-300 px-3 py-1 text-sm text-base-content/70"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
