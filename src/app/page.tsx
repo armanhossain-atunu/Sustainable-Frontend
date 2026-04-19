@@ -1,11 +1,15 @@
-import HeroSlider from '@/Components/Hero/HeroSlider';
-import AllProducts from '@/Components/Products/AllProducts';
-import RecentProducts from '@/Components/Products/RecentProducts';
+import HeroSlider from "@/Components/Hero/HeroSlider";
+import AllProducts from "@/Components/Products/AllProducts";
+import ProductServiceRequestForm from "@/Components/Products/ProductServiceRequestForm";
+import RecentProducts from "@/Components/Products/RecentProducts";
 
-// All products are fetched here and passed down to the ProductNameList component for display. This keeps the data fetching logic centralized in the page component, while the ProductNameList remains a pure presentational component.
-async function fetchProducts() {
-  const response = await fetch(`${process.env.SERVER_DOMAIN?.trim()}/products`, {
-    cache: 'no-store',
+async function fetchProducts(search?: string) {
+  const baseUrl = process.env.SERVER_DOMAIN?.trim();
+  const searchText = search?.trim();
+  const query = searchText ? `?search=${encodeURIComponent(searchText)}` : "";
+
+  const response = await fetch(`${baseUrl}/products${query}`, {
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -16,14 +20,21 @@ async function fetchProducts() {
   return Array.isArray(json.data) ? json.data : [];
 }
 
-const Home = async () => {
-  const products = await fetchProducts();
+type HomePageProps = {
+  searchParams: Promise<{ search?: string }>;
+};
+
+const Home = async ({ searchParams }: HomePageProps) => {
+  const { search = "" } = await searchParams;
+  const products = await fetchProducts(search);
+  const isSearching = Boolean(search.trim());
 
   return (
     <div className="min-h-screen">
       <HeroSlider />
-      <RecentProducts products={products} />
-      <AllProducts products={products} />
+      {!isSearching ? <RecentProducts products={products} /> : null}
+      <AllProducts products={products} searchQuery={search} />
+      <ProductServiceRequestForm />
     </div>
   );
 };

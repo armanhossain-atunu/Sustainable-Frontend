@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Logo from "../Shear/Logo";
-import { ShoppingCart, UserPlus } from "lucide-react";
+import { LayoutDashboard, PackagePlus, ShoppingCart, UserPlus } from "lucide-react";
 import Link from "next/link";
 import SearchBar from "../Shear/SearchBar";
 import NavLink from "./NavLink";
@@ -13,15 +13,13 @@ import Image from "next/image";
 const Navbar = () => {
   const { data: session } = useSession();
   const user = session?.user;
-  console.log("User session data:", session?.user);
   const { cart } = useCart();
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const dashboardHref = user?.role === "admin" ? "/admin/dashboard" : "/dashboard";
   const navItems = [
     { name: "Laptop", href: "/laptop" },
     { name: "Desktop", href: "/desktop" },
     { name: "Accessories", href: "/accessories" },
-    { name: "AddProducts", href: "/addProduct" },
-    // { name: "Cart", href: "/cart" },
   ];
   return (
     <div>
@@ -54,6 +52,11 @@ const Navbar = () => {
                   <NavLink href={item.href}>{item.name}</NavLink>
                 </li>
               ))}
+              {user?.role === "admin" ? (
+                <li>
+                  <NavLink href="/addProduct">Add Product</NavLink>
+                </li>
+              ) : null}
             </ul>
           </div>
 
@@ -70,6 +73,11 @@ const Navbar = () => {
                 <NavLink href={item.href}>{item.name}</NavLink>
               </li>
             ))}
+            {user?.role === "admin" ? (
+              <li>
+                <NavLink href="/addProduct">Add Product</NavLink>
+              </li>
+            ) : null}
           </ul>
         </div>
 
@@ -100,13 +108,16 @@ const Navbar = () => {
           {/* USER INFO OR LOGIN BUTTON */}
           {user ? (
             <div className="flex items-center gap-2">
-              {/* {user.image && (
-                <img src={user.image} alt={user.name || ""} className="w-8 h-8 rounded-full object-cover" />
-              )}
-              <span className="font-medium">{user.name}</span>
-              <button onClick={() => signOut()} className="btn btn-ghost btn-xs">Logout</button> */}
               <div className="navbar">
                 <div className="flex gap-2">
+                  <Link href={dashboardHref} className="btn btn-ghost btn-circle" aria-label="Open dashboard">
+                    <LayoutDashboard size={18} />
+                  </Link>
+                  {user.role === "admin" ? (
+                    <Link href="/addProduct" className="btn btn-ghost btn-circle" aria-label="Add product">
+                      <PackagePlus size={18} />
+                    </Link>
+                  ) : null}
                   <div className="dropdown dropdown-end">
                     <div
                       tabIndex={0}
@@ -121,23 +132,31 @@ const Navbar = () => {
                       tabIndex={0}
                       className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                     >
-                      <li><a href="">{user.name}</a></li>
-                      <li>{user.email}</li>
                       <li>
-                        <a className="justify-between">
-                          Profile
-                          <span className="badge">New</span>
-                        </a>
+                        <span className="font-semibold">{user.name}</span>
                       </li>
                       <li>
-                        <a>Settings</a>
+                        <span className="text-xs opacity-70">{user.email}</span>
                       </li>
-                      <button
-                        onClick={() => signOut()}
-                        className="btn btn-ghost btn-xs"
-                      >
-                        Logout
-                      </button>
+                      <li>
+                        <Link href={dashboardHref}>Dashboard</Link>
+                      </li>
+                      {user.role === "admin" ? (
+                        <li>
+                          <Link href="/addProduct">Add Product</Link>
+                        </li>
+                      ) : null}
+                      <li>
+                        <span className="capitalize">Role: {user.role}</span>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => signOut({ callbackUrl: "/login" })}
+                          className="text-left"
+                        >
+                          Logout
+                        </button>
+                      </li>
                     </ul>
                   </div>
                 </div>

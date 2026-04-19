@@ -1,12 +1,14 @@
-import AddProductPage from '@/Components/AddProduct';
-import React from 'react';
+import ProductAdminForm from "@/Components/Products/ProductAdminForm";
+import { requireAdmin } from "@/lib/auth";
 
-const AddProduct = () => {
-    return (
-        <div>
-            <AddProductPage></AddProductPage>
-        </div>
-    );
+const AddProduct = async () => {
+  await requireAdmin();
+
+  return (
+    <section className="px-4 py-10 sm:px-6 lg:px-8">
+      <ProductAdminForm mode="create" />
+    </section>
+  );
 };
 
 export default AddProduct;

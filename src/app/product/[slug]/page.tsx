@@ -1,7 +1,10 @@
+import ProductAddToCartButton from "@/Components/Products/ProductAddToCartButton";
+import ProductServiceRequestForm from "@/Components/Products/ProductServiceRequestForm";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import ProductAddToCartButton from "@/components/Products/ProductAddToCartButton";
+// import ProductAddToCartButton from "@/components/Products/ProductAddToCartButton";
+// import ProductServiceRequestForm from "@/components/Products/ProductServiceRequestForm";
 
 type Product = {
   _id: string;
@@ -19,6 +22,7 @@ type Product = {
   organizer?: string;
   organizerContact?: string;
   status?: string;
+  modelNumber?: string;
   tags?: string[];
 };
 
@@ -85,7 +89,9 @@ export default async function ProductDetailsPage({
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="overflow-hidden rounded-3xl border border-base-300 bg-base-200 shadow-sm">
+        <div className="group relative overflow-hidden rounded-3xl border border-base-300 bg-base-200 shadow-sm transition duration-500 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-tr from-black/10 via-transparent to-white/20 opacity-70 transition duration-500 group-hover:opacity-100" />
+          <div className="pointer-events-none absolute -right-16 top-0 z-10 h-40 w-40 rounded-full bg-white/20 blur-3xl transition duration-500 group-hover:scale-125" />
           {product.image ? (
             <Image
               src={product.image}
@@ -93,7 +99,7 @@ export default async function ProductDetailsPage({
               width={900}
               height={900}
               priority
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-110"
             />
           ) : (
             <div className="flex min-h-[420px] items-center justify-center text-base-content/50">
@@ -196,6 +202,11 @@ export default async function ProductDetailsPage({
               </div>
             </div>
           ) : null}
+
+          <ProductServiceRequestFormn
+            productName={product.title}
+            modelNumber={product.modelNumber}
+          />
         </div>
       </div>
     </section>

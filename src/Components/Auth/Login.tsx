@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import Link from 'next/link';
 
 interface LoginFormInputs {
@@ -31,14 +31,18 @@ const Login = () => {
       if (result?.error) {
         toast.error(result.error || "Login failed");
       } else {
+        const session = await getSession();
+        const redirectPath =
+          session?.user?.role === "admin" ? "/admin/dashboard" : "/dashboard";
         toast.success("Login successful!");
         setTimeout(() => {
-          router.push("/");
+          router.push(redirectPath);
           router.refresh();
         }, 1200);
       }
-    } catch (err: any) {
-      toast.error(err.message || "Login failed");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Login failed";
+      toast.error(message);
     }
   };
 
@@ -70,7 +74,7 @@ const Login = () => {
       </form>
       <div className="divider max-w-md mx-auto">OR</div>
       <p className="text-center text-sm">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link href="/register" className="link link-primary font-semibold">
           Register here
         </Link>
